@@ -1,20 +1,15 @@
-import API from "../api/axios";
+import API from "../services/api";
 
-// ✅ PUBLIC (for website)
+// PUBLIC
 export const getActiveHero = () => API.get("/hero");
 
-// ✅ ADMIN
+// ADMIN
 export const getAllHero = () => API.get("/hero/all");
 
-export const uploadHero = (data) =>
+export const createHero = (data) =>
   API.post("/hero", data, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
+    headers: { "Content-Type": "multipart/form-data" },
   });
 
-export const toggleHero = (id) =>
-  API.put(`/hero/${id}`);
-
-export const deleteHero = (id) =>
-  API.delete(`/hero/${id}`);
+export const toggleHero = (id) => API.put(`/hero/${id}`);
+export const deleteHero = (id) => API.delete(`/hero/${id}`);
