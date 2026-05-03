@@ -9,6 +9,9 @@ const Hero = () => {
     const fetchHero = async () => {
       try {
         const res = await getActiveHero();
+
+        console.log("🔥 Hero Data:", res.data);
+
         setHero(res.data || null);
       } catch (error) {
         console.error("Hero fetch error:", error);
@@ -22,7 +25,9 @@ const Hero = () => {
   }, []);
 
   if (loading) {
-    return <div className="w-full h-[60vh] md:h-[80vh] bg-gray-100 animate-pulse" />;
+    return (
+      <div className="w-full h-[60vh] md:h-[80vh] bg-gray-100 animate-pulse" />
+    );
   }
 
   if (!hero) return null;
@@ -30,20 +35,25 @@ const Hero = () => {
   return (
     <section className="w-full overflow-hidden">
       <picture>
+        {/* Mobile */}
         <source
           media="(max-width: 768px)"
           srcSet={hero.mobileImage}
         />
+
+        {/* Desktop */}
         <source
           media="(min-width: 769px)"
           srcSet={hero.desktopImage}
         />
+
+        {/* Default fallback */}
         <img
-          src={hero.desktopImage || hero.mobileImage}
-          alt="Hero banner"
+          key={hero._id}
+          src={hero.desktopImage}
+          alt="Hero Banner"
           className="w-full h-[60vh] md:h-[80vh] object-cover object-center"
           loading="eager"
-          decoding="async"
         />
       </picture>
     </section>
