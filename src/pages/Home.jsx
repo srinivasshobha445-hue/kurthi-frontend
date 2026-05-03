@@ -9,7 +9,7 @@ const Home = () => {
   return (
     <div>
       <Hero />
-      <Categories />
+       <Categories limit={7} />
        <TrendingProducts />
        <Hero2 />
        <Features />
