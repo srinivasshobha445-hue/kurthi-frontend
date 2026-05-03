@@ -1,4 +1,4 @@
-import API from "../services/api";
+import API from "../api/axios";
 
 // PUBLIC
 export const getActiveHero = () => API.get("/hero");
