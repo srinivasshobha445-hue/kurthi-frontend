@@ -44,7 +44,11 @@ const Collection = () => {
 
         console.log("Products 👉", data);
 
-        setProducts(Array.isArray(data) ? data : []);
+        setProducts(
+  Array.isArray(data?.products)
+    ? data.products
+    : []
+);
       } catch (error) {
         console.error(error);
         setProducts([]);

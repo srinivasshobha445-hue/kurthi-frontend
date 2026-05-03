@@ -28,7 +28,11 @@ const CollectionPage = () => {
         );
 
         if (active) {
-          setProducts(Array.isArray(data) ? data : []);
+          setProducts(
+  Array.isArray(data?.products)
+    ? data.products
+    : []
+);
         }
       } catch (err) {
         console.error("Product fetch error 👉", err);

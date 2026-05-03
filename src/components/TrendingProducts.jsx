@@ -16,7 +16,11 @@ const TrendingProducts = () => {
         const data = await getProducts({ limit: 8 });
 
         if (!alive) return;
-        setProducts(Array.isArray(data) ? data.slice(0, 8) : []);
+        setProducts(
+  Array.isArray(data?.products)
+    ? data.products
+    : []
+);
       } catch (error) {
         console.error("Trending products error:", error);
         if (alive) setProducts([]);
