@@ -22,22 +22,26 @@ const Hero = () => {
   }, []);
 
   if (loading) {
-    return (
-      <div className="w-full h-[60vh] md:h-[80vh] bg-gray-100 animate-pulse" />
-    );
+    return <div className="w-full h-[60vh] md:h-[80vh] bg-gray-100 animate-pulse" />;
   }
 
   if (!hero) return null;
 
   return (
-    <section className="w-full">
+    <section className="w-full overflow-hidden">
       <picture>
-        <source media="(max-width: 768px)" srcSet={hero.mobileImage} />
-        <source media="(min-width: 769px)" srcSet={hero.desktopImage} />
+        <source
+          media="(max-width: 768px)"
+          srcSet={hero.mobileImage}
+        />
+        <source
+          media="(min-width: 769px)"
+          srcSet={hero.desktopImage}
+        />
         <img
-          src={hero.desktopImage}
+          src={hero.desktopImage || hero.mobileImage}
           alt="Hero banner"
-          className="w-full h-[60vh] md:h-[80vh] object-cover"
+          className="w-full h-[60vh] md:h-[80vh] object-cover object-center"
           loading="eager"
           decoding="async"
         />
