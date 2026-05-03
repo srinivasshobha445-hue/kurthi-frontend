@@ -9,30 +9,23 @@ export const addProduct = async (data) => {
       "Content-Type": "multipart/form-data",
     },
   });
-  return res.data; // ✅ clean
+  return res.data;
 };
 
 /* ===============================
-   📦 GET PRODUCTS (MAIN)
+   📦 GET PRODUCTS
 ================================ */
 export const getProducts = async (params = {}) => {
   const res = await API.get("/products", { params });
-  return res.data; // ✅ MUST RETURN ARRAY
+  return res.data;
 };
-
-/*
-Usage:
-getProducts()
-getProducts({ category: "123" })
-getProducts({ search: "kurti" })
-*/
 
 /* ===============================
    📦 GET SINGLE PRODUCT
 ================================ */
 export const getSingleProduct = async (id) => {
   const res = await API.get(`/products/${id}`);
-  return res.data; // ✅ clean
+  return res.data;
 };
 
 /* ===============================

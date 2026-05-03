@@ -8,32 +8,32 @@ const Categories = ({ limit = 7 }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    let mounted = true;
+    let isMounted = true;
 
-    const fetchData = async () => {
+    const fetchCategories = async () => {
       try {
         const data = await getCategories();
         const list = Array.isArray(data) ? data.slice(0, limit) : [];
 
-        if (mounted) {
+        if (isMounted) {
           setCategories(list);
         }
-      } catch (err) {
-        console.error("Category fetch error:", err);
-        if (mounted) {
+      } catch (error) {
+        console.error("Category fetch error:", error);
+        if (isMounted) {
           setCategories([]);
         }
       } finally {
-        if (mounted) {
+        if (isMounted) {
           setLoading(false);
         }
       }
     };
 
-    fetchData();
+    fetchCategories();
 
     return () => {
-      mounted = false;
+      isMounted = false;
     };
   }, [limit]);
 
@@ -51,8 +51,8 @@ const Categories = ({ limit = 7 }) => {
 
       {loading ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-4 md:gap-6">
-          {Array.from({ length: limit }).map((_, i) => (
-            <div key={i} className="flex flex-col items-center animate-pulse">
+          {Array.from({ length: limit }).map((_, index) => (
+            <div key={index} className="flex flex-col items-center animate-pulse">
               <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-gray-200" />
               <div className="mt-3 h-3 w-16 bg-gray-200 rounded" />
             </div>
@@ -60,7 +60,6 @@ const Categories = ({ limit = 7 }) => {
         </div>
       ) : categories.length > 0 ? (
         <>
-          {/* Mobile scroll */}
           <div className="flex md:hidden gap-4 overflow-x-auto pb-2 no-scrollbar">
             {categories.map((cat) => (
               <button
@@ -78,6 +77,7 @@ const Categories = ({ limit = 7 }) => {
                     }}
                     className="w-full h-full object-cover group-hover:scale-110 transition duration-300"
                     loading="lazy"
+                    decoding="async"
                   />
                 </div>
                 <p className="text-xs mt-2 text-center text-gray-700 group-hover:text-pink-600 line-clamp-2">
@@ -87,7 +87,6 @@ const Categories = ({ limit = 7 }) => {
             ))}
           </div>
 
-          {/* Desktop grid */}
           <div className="hidden md:grid grid-cols-4 lg:grid-cols-7 gap-6 mt-6">
             {categories.map((cat) => (
               <button
@@ -105,6 +104,7 @@ const Categories = ({ limit = 7 }) => {
                     }}
                     className="w-full h-full object-cover group-hover:scale-110 transition duration-300"
                     loading="lazy"
+                    decoding="async"
                   />
                 </div>
                 <p className="mt-3 text-sm lg:text-base text-center text-gray-700 group-hover:text-pink-600 line-clamp-2">
