@@ -7,15 +7,21 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  /* ===============================
+     LOAD USER ON APP START
+  ============================== */
   useEffect(() => {
     const loadUser = async () => {
       try {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-
         const res = await API.get("/auth/me");
-        setUser(res.data.user);
+
+        if (res?.data?.user) {
+          setUser(res.data.user);
+        } else {
+          setUser(null);
+        }
       } catch (error) {
+        console.error("AUTH LOAD ERROR:", error.response?.data || error.message);
         setUser(null);
       } finally {
         setLoading(false);
@@ -25,15 +31,21 @@ export const AuthProvider = ({ children }) => {
     loadUser();
   }, []);
 
+  /* ===============================
+     LOGIN
+  ============================== */
   const login = (userData) => {
     setUser(userData);
   };
 
+  /* ===============================
+     LOGOUT
+  ============================== */
   const logout = async () => {
     try {
       await API.post("/auth/logout");
     } catch (error) {
-      // ignore logout network errors
+      console.error("LOGOUT ERROR:", error.response?.data || error.message);
     } finally {
       setUser(null);
     }
@@ -43,13 +55,14 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         user,
+        setUser,
         login,
         logout,
         loading,
         isAuthenticated: !!user,
       }}
     >
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 };
