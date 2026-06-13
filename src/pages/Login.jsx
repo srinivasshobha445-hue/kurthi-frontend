@@ -1,30 +1,36 @@
+// Login.jsx
 import { useContext, useState } from "react";
 import API from "../api/axios";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
 const Login = () => {
   const { login } = useContext(AuthContext);
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    const cleanEmail = email.trim().toLowerCase();
+    if (!cleanEmail) return toast.error("Email is required");
+    if (!password.trim()) return toast.error("Password is required");
+
     try {
       setLoading(true);
 
       const res = await API.post("/auth/login", {
-        email,
+        email: cleanEmail,
         password,
       });
 
       login(res.data.user);
-      toast.success("Login Success ✅");
-      navigate("/");
+      toast.success("Login success ✅");
+      navigate("/", { replace: true });
     } catch (error) {
       const err = error.response?.data;
 
@@ -41,13 +47,17 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-100 to-purple-200 px-4">
-      <div className="bg-white p-6 md:p-8 rounded-2xl shadow-lg w-full max-w-md">
+      <form
+        onSubmit={handleLogin}
+        className="bg-white p-6 md:p-8 rounded-2xl shadow-lg w-full max-w-md"
+      >
         <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
           Welcome Back 👋
         </h2>
 
         <input
           type="email"
+          autoComplete="email"
           placeholder="Email"
           className="border p-3 rounded-lg w-full mb-4 focus:outline-none focus:ring-2 focus:ring-pink-400"
           onChange={(e) => setEmail(e.target.value)}
@@ -56,6 +66,7 @@ const Login = () => {
 
         <input
           type="password"
+          autoComplete="current-password"
           placeholder="Password"
           className="border p-3 rounded-lg w-full mb-4 focus:outline-none focus:ring-2 focus:ring-pink-400"
           onChange={(e) => setPassword(e.target.value)}
@@ -63,23 +74,24 @@ const Login = () => {
         />
 
         <button
-          onClick={handleLogin}
+          type="submit"
           disabled={loading}
-          className="bg-pink-600 hover:bg-pink-700 transition text-white py-3 rounded-lg w-full font-semibold"
+          className={`w-full py-3 rounded-lg text-white font-semibold transition ${
+            loading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-pink-600 hover:bg-pink-700"
+          }`}
         >
           {loading ? "Logging in..." : "Login"}
         </button>
 
         <p className="text-center text-sm text-gray-500 mt-4">
           Don’t have an account?{" "}
-          <span
-            className="text-pink-600 cursor-pointer"
-            onClick={() => navigate("/register")}
-          >
+          <Link to="/register" className="text-pink-600">
             Register
-          </span>
+          </Link>
         </p>
-      </div>
+      </form>
     </div>
   );
 };

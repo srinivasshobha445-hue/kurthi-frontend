@@ -1,3 +1,4 @@
+// Navbar.jsx
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useState, useContext, useRef, useEffect } from "react";
 import {
@@ -16,46 +17,34 @@ const Navbar = () => {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [profileOpen, setProfileOpen] = useState(false);
-
   const [suggestions, setSuggestions] = useState([]);
   const [loadingSearch, setLoadingSearch] = useState(false);
 
   const navigate = useNavigate();
-  const { userToken, logout } = useContext(AuthContext);
+  const { user, logout, loading } = useContext(AuthContext);
   const { cart } = useContext(CartContext);
 
-  const profileRef = useRef();
-  const searchRef = useRef();
+  const profileRef = useRef(null);
+  const searchRef = useRef(null);
 
-  /* ===============================
-     CLOSE DROPDOWN OUTSIDE CLICK
-  ============================== */
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (profileRef.current && !profileRef.current.contains(e.target)) {
         setProfileOpen(false);
       }
-
       if (searchRef.current && !searchRef.current.contains(e.target)) {
         setSuggestions([]);
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () =>
-      document.removeEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  /* ===============================
-     CART COUNT
-  ============================== */
   const cartCount = Array.isArray(cart)
-    ? cart.reduce((acc, item) => acc + item.qty, 0)
+    ? cart.reduce((acc, item) => acc + (item.qty || 0), 0)
     : 0;
 
-  /* ===============================
-     DEBOUNCE SEARCH
-  ============================== */
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(search.trim());
@@ -64,9 +53,6 @@ const Navbar = () => {
     return () => clearTimeout(timer);
   }, [search]);
 
-  /* ===============================
-     FETCH SEARCH SUGGESTIONS
-  ============================== */
   useEffect(() => {
     const fetchSuggestions = async () => {
       if (debouncedSearch.length < 2) {
@@ -76,12 +62,9 @@ const Navbar = () => {
 
       try {
         setLoadingSearch(true);
-
         const res = await getProducts({ search: debouncedSearch });
-
         const data = Array.isArray(res.data) ? res.data : [];
-
-        setSuggestions(data.slice(0, 6)); // limit suggestions
+        setSuggestions(data.slice(0, 6));
       } catch (err) {
         console.error(err);
         setSuggestions([]);
@@ -93,40 +76,35 @@ const Navbar = () => {
     fetchSuggestions();
   }, [debouncedSearch]);
 
-  /* ===============================
-     HANDLE SUBMIT
-  ============================== */
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     const clean = search.trim();
-
     if (!clean) return;
 
-    navigate(`/collection?search=${clean}`);
+    navigate(`/collection?search=${encodeURIComponent(clean)}`);
     setSuggestions([]);
   };
 
-  /* ===============================
-     CLEAR SEARCH
-  ============================== */
   const clearSearch = () => {
     setSearch("");
     setSuggestions([]);
     navigate("/collection");
   };
 
+  const handleLogout = async () => {
+    await logout();
+    setProfileOpen(false);
+    navigate("/login", { replace: true });
+  };
+
   return (
     <>
-      {/* NAVBAR */}
       <div className="sticky top-0 z-50 bg-white shadow-sm">
         <div className="flex items-center justify-between px-4 md:px-12 py-4">
-
-          {/* LOGO */}
           <Link to="/" className="text-xl md:text-2xl font-bold text-pink-600">
             Desire<span className="text-black">7</span>
           </Link>
 
-          {/* NAV */}
           <div className="hidden md:flex gap-8 text-sm font-medium">
             <NavLink to="/">Home</NavLink>
             <NavLink to="/collection">Collection</NavLink>
@@ -134,14 +112,12 @@ const Navbar = () => {
             <NavLink to="/contact">Contact</NavLink>
           </div>
 
-          {/* SEARCH */}
           <div className="relative hidden md:block w-64" ref={searchRef}>
             <form
               onSubmit={handleSearchSubmit}
               className="flex items-center border rounded-full px-4 py-1 focus-within:ring-2 focus-within:ring-pink-500"
             >
               <FaSearch className="text-gray-400 mr-2" />
-
               <input
                 type="text"
                 placeholder="Search kurthi..."
@@ -149,7 +125,6 @@ const Navbar = () => {
                 onChange={(e) => setSearch(e.target.value)}
                 className="outline-none text-sm w-full bg-transparent"
               />
-
               {search && (
                 <button
                   type="button"
@@ -161,7 +136,6 @@ const Navbar = () => {
               )}
             </form>
 
-            {/* 🔥 LIVE DROPDOWN */}
             {suggestions.length > 0 && (
               <div className="absolute w-full bg-white shadow-lg rounded-xl mt-2 z-50 max-h-80 overflow-y-auto">
                 {suggestions.map((item) => (
@@ -184,7 +158,6 @@ const Navbar = () => {
               </div>
             )}
 
-            {/* LOADING */}
             {loadingSearch && (
               <div className="absolute mt-2 text-xs text-gray-400">
                 Searching...
@@ -192,12 +165,11 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* RIGHT */}
           <div className="flex items-center gap-5">
-
             <button
               className="md:hidden"
               onClick={() => navigate("/collection")}
+              aria-label="Search"
             >
               <FaSearch size={18} />
             </button>
@@ -214,27 +186,32 @@ const Navbar = () => {
             <button
               className="md:hidden"
               onClick={() => setMenuOpen(true)}
+              aria-label="Open menu"
             >
               <FaBars size={20} />
             </button>
 
-            {/* PROFILE */}
-            {userToken ? (
+            {!loading && user ? (
               <div className="relative hidden md:block" ref={profileRef}>
                 <FaUserCircle
                   size={26}
                   onClick={() => setProfileOpen(!profileOpen)}
+                  className="cursor-pointer"
                 />
-
                 {profileOpen && (
-                  <div className="absolute right-0 mt-3 w-44 bg-white shadow-lg rounded-xl p-3 text-sm">
+                  <div className="absolute right-0 mt-3 w-44 bg-white shadow-lg rounded-xl p-3 text-sm flex flex-col gap-2">
                     <Link to="/orders">📦 My Orders</Link>
-                    <button onClick={logout}>🚪 Logout</button>
+                    <button onClick={handleLogout} className="text-left">
+                      🚪 Logout
+                    </button>
                   </div>
                 )}
               </div>
             ) : (
-              <Link to="/login" className="hidden md:block border px-4 py-1 rounded-full">
+              <Link
+                to="/login"
+                className="hidden md:block border px-4 py-1 rounded-full"
+              >
                 Login
               </Link>
             )}
@@ -242,13 +219,30 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* MOBILE MENU */}
       {menuOpen && (
         <>
           <div className="fixed top-0 left-0 w-64 h-full bg-white z-50 p-6">
-            <FaTimes onClick={() => setMenuOpen(false)} />
-            <NavLink to="/">Home</NavLink>
-            <NavLink to="/collection">Collection</NavLink>
+            <FaTimes
+              onClick={() => setMenuOpen(false)}
+              className="cursor-pointer mb-6"
+            />
+            <div className="flex flex-col gap-4">
+              <NavLink to="/" onClick={() => setMenuOpen(false)}>
+                Home
+              </NavLink>
+              <NavLink to="/collection" onClick={() => setMenuOpen(false)}>
+                Collection
+              </NavLink>
+              {!loading && !user ? (
+                <NavLink to="/login" onClick={() => setMenuOpen(false)}>
+                  Login
+                </NavLink>
+              ) : (
+                <button onClick={handleLogout} className="text-left">
+                  Logout
+                </button>
+              )}
+            </div>
           </div>
 
           <div
