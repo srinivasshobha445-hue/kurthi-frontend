@@ -120,7 +120,7 @@ const Navbar = () => {
               <FaSearch className="text-gray-400 mr-2" />
               <input
                 type="text"
-                placeholder="Search kurthi..."
+                placeholder="Search kurti..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="outline-none text-sm w-full bg-transparent"

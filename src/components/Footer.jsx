@@ -13,7 +13,7 @@ const Footer = () => {
             Desire<span className="text-black">7</span>
           </h2>
           <p className="text-sm text-gray-600 mt-4">
-            Discover elegant and trendy kurthis for every occasion.
+            Discover elegant and trendy kurtis for every occasion.
             Style meets comfort with our premium collection.
           </p>
         </div>
@@ -33,7 +33,7 @@ const Footer = () => {
         <div>
           <h3 className="font-semibold mb-4">Categories</h3>
           <div className="flex flex-col gap-2 text-sm text-gray-600">
-            <Link to="/collection">Cotton Kurthi</Link>
+            <Link to="/collection">Cotton Kurti</Link>
             <Link to="/collection">Party Wear</Link>
             <Link to="/collection">Casual Wear</Link>
             <Link to="/collection">Festive Collection</Link>
@@ -44,7 +44,7 @@ const Footer = () => {
         <div>
           <h3 className="font-semibold mb-4">Contact</h3>
           <div className="text-sm text-gray-600 space-y-2">
-            <p>Email: support@kurthistore.com</p>
+            <p>Email: support@kurtistore.com</p>
             <p>Phone: +91 9876543210</p>
             <p>Bangalore, India</p>
           </div>

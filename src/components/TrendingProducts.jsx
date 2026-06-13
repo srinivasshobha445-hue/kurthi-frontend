@@ -41,7 +41,7 @@ const TrendingProducts = () => {
       <div className="text-center mb-10">
         <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight">
           <span className="text-gray-900">Trending</span>{" "}
-          <span className="text-pink-600">Kurthis</span>
+          <span className="text-pink-600">Kurtis</span>
         </h2>
         <div className="w-20 h-1 bg-pink-600 mx-auto rounded-full mt-4" />
       </div>
