@@ -1,9 +1,11 @@
 import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { CartContext } from "../context/CartContext";
 import { toast } from "react-toastify";
 import { placeOrder } from "../api/order";
 
 const Checkout = () => {
+  const navigate = useNavigate();
   const { cart, totalPrice, clearCart } = useContext(CartContext);
 
   const [form, setForm] = useState({
@@ -15,11 +17,12 @@ const Checkout = () => {
     pincode: "",
   });
 
+  const [placingOrder, setPlacingOrder] = useState(false);
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // ✅ VALIDATION
   const validate = () => {
     if (!form.name || !form.phone || !form.address) {
       toast.error("Please fill all required fields");
@@ -36,37 +39,52 @@ const Checkout = () => {
       return false;
     }
 
+    if (!cart || cart.length === 0) {
+      toast.error("Your cart is empty");
+      return false;
+    }
+
     return true;
   };
 
-  // ✅ PLACE ORDER
   const handleOrder = async () => {
-  if (!validate()) return;
+    if (!validate()) return;
 
-  try {
-    const orderData = {
-      items: cart.map((item) => ({
-        productId: item._id,
-        name: item.name,
-        image: item.image,
-        price: item.price,
-        qty: item.qty,
-        size: item.size,
-      })),
-      totalAmount: totalPrice,
-      address: form,
-    };
+    try {
+      setPlacingOrder(true);
 
-    await placeOrder(orderData);
+      const orderData = {
+        items: cart.map((item) => ({
+          productId: item._id,
+          name: item.name,
+          image: item.image,
+          price: item.price,
+          qty: item.qty,
+          size: item.size,
+        })),
+        totalAmount: totalPrice,
+        address: form,
+      };
 
-    toast.success("Order placed successfully 🎉");
+      const res = await placeOrder(orderData);
 
-    clearCart();
+      toast.success("Order placed successfully 🎉");
 
-  } catch (error) {
-    toast.error("Order failed ❌");
-  }
-};
+      clearCart();
+
+      navigate("/orders", {
+        state: {
+          success: true,
+          orderId: res.data?.order?._id,
+        },
+      });
+    } catch (error) {
+      console.error("ORDER ERROR:", error);
+      toast.error(error.response?.data?.message || "Order failed ❌");
+    } finally {
+      setPlacingOrder(false);
+    }
+  };
 
   if (cart.length === 0) {
     return (
@@ -79,19 +97,18 @@ const Checkout = () => {
   return (
     <div className="bg-gray-50 min-h-screen py-10 px-4 md:px-10">
       <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10">
-
-        {/* 🔥 LEFT: ADDRESS FORM */}
+        {/* LEFT: ADDRESS FORM */}
         <div className="bg-white p-6 rounded-xl shadow">
           <h2 className="text-xl font-semibold mb-4">
             Delivery Address
           </h2>
 
           <div className="grid gap-4">
-
             <input
               type="text"
               name="name"
               placeholder="Full Name *"
+              value={form.name}
               onChange={handleChange}
               className="border p-3 rounded"
             />
@@ -100,6 +117,7 @@ const Checkout = () => {
               type="number"
               name="phone"
               placeholder="Phone Number *"
+              value={form.phone}
               onChange={handleChange}
               className="border p-3 rounded"
             />
@@ -107,6 +125,7 @@ const Checkout = () => {
             <textarea
               name="address"
               placeholder="Street Address *"
+              value={form.address}
               onChange={handleChange}
               className="border p-3 rounded"
             />
@@ -116,6 +135,7 @@ const Checkout = () => {
                 type="text"
                 name="city"
                 placeholder="City"
+                value={form.city}
                 onChange={handleChange}
                 className="border p-3 rounded"
               />
@@ -124,6 +144,7 @@ const Checkout = () => {
                 type="text"
                 name="state"
                 placeholder="State"
+                value={form.state}
                 onChange={handleChange}
                 className="border p-3 rounded"
               />
@@ -133,23 +154,25 @@ const Checkout = () => {
               type="number"
               name="pincode"
               placeholder="Pincode *"
+              value={form.pincode}
               onChange={handleChange}
               className="border p-3 rounded"
             />
-
           </div>
         </div>
 
-        {/* 🔥 RIGHT: ORDER SUMMARY */}
+        {/* RIGHT: ORDER SUMMARY */}
         <div className="bg-white p-6 rounded-xl shadow h-fit">
           <h2 className="text-xl font-semibold mb-4">
             Order Summary
           </h2>
 
-          {/* ITEMS */}
           <div className="flex flex-col gap-4 max-h-64 overflow-y-auto">
             {cart.map((item) => (
-              <div key={item._id + item.size} className="flex justify-between text-sm">
+              <div
+                key={item._id + item.size}
+                className="flex justify-between text-sm"
+              >
                 <div>
                   <p>{item.name}</p>
                   <p className="text-gray-500">
@@ -161,18 +184,21 @@ const Checkout = () => {
             ))}
           </div>
 
-          {/* TOTAL */}
           <div className="border-t mt-4 pt-4 flex justify-between font-semibold">
             <span>Total</span>
             <span>₹{totalPrice}</span>
           </div>
 
-          {/* BUTTON */}
           <button
             onClick={handleOrder}
-            className="w-full mt-6 bg-green-600 text-white py-3 rounded-xl hover:bg-green-700 transition"
+            disabled={placingOrder}
+            className={`w-full mt-6 text-white py-3 rounded-xl transition ${
+              placingOrder
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-green-600 hover:bg-green-700"
+            }`}
           >
-            Place Order
+            {placingOrder ? "Placing Order..." : "Place Order"}
           </button>
         </div>
       </div>
