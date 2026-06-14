@@ -1,20 +1,22 @@
 import { Link } from "react-router-dom";
 import { FaInstagram, FaFacebook, FaTwitter } from "react-icons/fa";
+import logo from "../assets/logo.png";
 
 const Footer = () => {
   return (
     <div className="bg-gray-100 mt-16">
-      
       <div className="px-6 md:px-12 py-12 grid grid-cols-1 md:grid-cols-4 gap-10">
-
         {/* BRAND */}
         <div>
-          <h2 className="text-2xl font-bold text-pink-600">
-            Desire<span className="text-black">7</span>
-          </h2>
+          <img
+            src={logo}
+            alt="Desire7"
+            className="h-20 w-20 rounded-full object-cover border-2 border-pink-500 shadow-lg"
+          />
+
           <p className="text-sm text-gray-600 mt-4">
-            Discover elegant and trendy kurtis for every occasion.
-            Style meets comfort with our premium collection.
+            Discover elegant and trendy kurtis for every occasion. Style meets
+            comfort with our premium collection.
           </p>
         </div>
 
@@ -44,9 +46,9 @@ const Footer = () => {
         <div>
           <h3 className="font-semibold mb-4">Contact</h3>
           <div className="text-sm text-gray-600 space-y-2">
-            <p>Email: support@kurtistore.com</p>
-            <p>Phone: +91 9876543210</p>
-            <p>Bangalore, India</p>
+            <p>Email: desire7clothing@gmail.com</p>
+            <p>Phone: +91 9620802026</p>
+            <p>Karnataka, India</p>
           </div>
 
           {/* SOCIAL */}
@@ -56,22 +58,20 @@ const Footer = () => {
             <FaTwitter className="cursor-pointer hover:text-blue-400" />
           </div>
         </div>
-
       </div>
 
       {/* BOTTOM */}
-      
-      <div className="border-t text-center py-4 text-sm text-gray-500 flex flex-col md:flex-row items-center justify-center gap-2">
-  <p>© 2026 Desire7. All rights reserved.</p>
-  
-  <p>
-    Developed by{" "}
-    <span className="text-pink-600 font-medium hover:underline cursor-pointer">
-      SLB Tech
-    </span>
-  </p>
-</div>
 
+      <div className="border-t text-center py-4 text-sm text-gray-500 flex flex-col md:flex-row items-center justify-center gap-2">
+        <p>© 2026 Desire7. All rights reserved.</p>
+
+        <p>
+          Developed by{" "}
+          <span className="text-pink-600 font-medium hover:underline cursor-pointer">
+            SLB Tech
+          </span>
+        </p>
+      </div>
     </div>
   );
 };
