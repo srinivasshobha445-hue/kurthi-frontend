@@ -110,7 +110,7 @@ const Navbar = () => {
             <img
               src={logo}
               alt="Desire7"
-              className="h-10 md:h-14 w-auto object-contain"
+              className="h-12 w-12 md:h-14 md:w-14 rounded-full object-cover border border-gray-200 shadow-sm"
             />
           </Link>
 
@@ -232,11 +232,15 @@ const Navbar = () => {
         <>
           <div className="fixed top-0 left-0 w-72 h-full bg-white z-50 p-6 shadow-xl">
             <div className="flex items-center justify-between mb-6">
-              <Link to="/" onClick={() => setMenuOpen(false)} className="flex items-center">
+              <Link
+                to="/"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center"
+              >
                 <img
                   src={logo}
                   alt="Desire7"
-                  className="h-10 w-auto object-contain"
+                  className="h-12 w-12 rounded-full object-cover border border-gray-200 shadow-sm"
                 />
               </Link>
 
@@ -271,7 +275,10 @@ const Navbar = () => {
                   Login
                 </NavLink>
               ) : (
-                <button onClick={handleLogout} className="text-left text-red-500">
+                <button
+                  onClick={handleLogout}
+                  className="text-left text-red-500"
+                >
                   Logout
                 </button>
               )}
