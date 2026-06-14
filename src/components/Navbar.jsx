@@ -1,4 +1,3 @@
-// Navbar.jsx
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useState, useContext, useRef, useEffect } from "react";
 import {
@@ -11,6 +10,7 @@ import {
 import { AuthContext } from "../context/AuthContext";
 import { CartContext } from "../context/CartContext";
 import { getProducts } from "../api/product";
+import logo from "../assets/logo.png"; // change filename if your logo name is different
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -63,7 +63,11 @@ const Navbar = () => {
       try {
         setLoadingSearch(true);
         const res = await getProducts({ search: debouncedSearch });
-        const data = Array.isArray(res.data) ? res.data : [];
+        const data = Array.isArray(res.data?.products)
+          ? res.data.products
+          : Array.isArray(res.data)
+            ? res.data
+            : [];
         setSuggestions(data.slice(0, 6));
       } catch (err) {
         console.error(err);
@@ -94,6 +98,7 @@ const Navbar = () => {
   const handleLogout = async () => {
     await logout();
     setProfileOpen(false);
+    setMenuOpen(false);
     navigate("/login", { replace: true });
   };
 
@@ -101,8 +106,12 @@ const Navbar = () => {
     <>
       <div className="sticky top-0 z-50 bg-white shadow-sm">
         <div className="flex items-center justify-between px-4 md:px-12 py-4">
-          <Link to="/" className="text-xl md:text-2xl font-bold text-pink-600">
-            Desire<span className="text-black">7</span>
+          <Link to="/" className="flex items-center">
+            <img
+              src={logo}
+              alt="Desire7"
+              className="h-10 md:h-14 w-auto object-contain"
+            />
           </Link>
 
           <div className="hidden md:flex gap-8 text-sm font-medium">
@@ -221,24 +230,48 @@ const Navbar = () => {
 
       {menuOpen && (
         <>
-          <div className="fixed top-0 left-0 w-64 h-full bg-white z-50 p-6">
-            <FaTimes
-              onClick={() => setMenuOpen(false)}
-              className="cursor-pointer mb-6"
-            />
-            <div className="flex flex-col gap-4">
+          <div className="fixed top-0 left-0 w-72 h-full bg-white z-50 p-6 shadow-xl">
+            <div className="flex items-center justify-between mb-6">
+              <Link to="/" onClick={() => setMenuOpen(false)} className="flex items-center">
+                <img
+                  src={logo}
+                  alt="Desire7"
+                  className="h-10 w-auto object-contain"
+                />
+              </Link>
+
+              <FaTimes
+                onClick={() => setMenuOpen(false)}
+                className="cursor-pointer text-xl"
+              />
+            </div>
+
+            <div className="flex flex-col gap-4 text-base">
               <NavLink to="/" onClick={() => setMenuOpen(false)}>
                 Home
               </NavLink>
               <NavLink to="/collection" onClick={() => setMenuOpen(false)}>
                 Collection
               </NavLink>
+              <NavLink to="/about" onClick={() => setMenuOpen(false)}>
+                About
+              </NavLink>
+              <NavLink to="/contact" onClick={() => setMenuOpen(false)}>
+                Contact
+              </NavLink>
+
+              {user && (
+                <NavLink to="/orders" onClick={() => setMenuOpen(false)}>
+                  📦 My Orders
+                </NavLink>
+              )}
+
               {!loading && !user ? (
                 <NavLink to="/login" onClick={() => setMenuOpen(false)}>
                   Login
                 </NavLink>
               ) : (
-                <button onClick={handleLogout} className="text-left">
+                <button onClick={handleLogout} className="text-left text-red-500">
                   Logout
                 </button>
               )}
