@@ -1,10 +1,13 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getSingleProduct } from "../api/product";
 import { FaShoppingCart } from "react-icons/fa";
 import { CartContext } from "../context/CartContext";
 import { toast } from "react-toastify";
 import RelatedProducts from "../components/RelatedProducts";
+
+const FALLBACK_IMAGE =
+  "https://via.placeholder.com/800x1000?text=No+Image";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -14,29 +17,41 @@ const ProductDetails = () => {
   const [loading, setLoading] = useState(true);
   const [qty, setQty] = useState(1);
   const [size, setSize] = useState("M");
+  const [selectedImage, setSelectedImage] = useState("");
 
   const { addToCart } = useContext(CartContext);
 
   useEffect(() => {
-  const fetchProduct = async () => {
-    try {
-      const data = await getSingleProduct(id);
+    const fetchProduct = async () => {
+      try {
+        setLoading(true);
+        const data = await getSingleProduct(id);
+        setProduct(data || null);
+      } catch (error) {
+        console.error("Product fetch error:", error);
+        setProduct(null);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-      console.log("Product 👉", data); // debug
+    fetchProduct();
+  }, [id]);
 
-      setProduct(data || null);
-    } catch (error) {
-      console.error("Product fetch error:", error);
-      setProduct(null);
-    } finally {
-      setLoading(false);
+  const productImages = useMemo(() => {
+    if (!product) return [];
+    const imgs = Array.isArray(product.images) ? product.images : [];
+    return imgs.length > 0 ? imgs.slice(0, 4) : [FALLBACK_IMAGE];
+  }, [product]);
+
+  useEffect(() => {
+    if (productImages.length > 0) {
+      setSelectedImage(productImages[0]);
+    } else {
+      setSelectedImage(FALLBACK_IMAGE);
     }
-  };
+  }, [productImages]);
 
-  fetchProduct();
-}, [id]);
-
-  // ✅ Loading Skeleton
   if (loading) {
     return (
       <div className="text-center py-20 text-gray-500">
@@ -53,11 +68,6 @@ const ProductDetails = () => {
     );
   }
 
-  // ✅ Fallback image
-  const image =
-    product.image || "https://via.placeholder.com/600x700?text=No+Image";
-
-  // ✅ Discount %
   const discount =
     product.discount > 0
       ? product.discount
@@ -67,19 +77,14 @@ const ProductDetails = () => {
         )
       : 0;
 
-  // ✅ Savings
   const savings =
-    product.oldPrice && product.price
-      ? product.oldPrice - product.price
-      : 0;
+    product.oldPrice && product.price ? product.oldPrice - product.price : 0;
 
-  // ✅ Add to Cart
   const handleAddToCart = () => {
     addToCart(product, qty, size);
     toast.success("Added to cart 🛒");
   };
 
-  // ✅ Buy Now
   const handleBuyNow = () => {
     addToCart(product, qty, size);
     navigate("/checkout");
@@ -88,41 +93,62 @@ const ProductDetails = () => {
   return (
     <div className="bg-white min-h-screen px-4 md:px-10 py-10">
       <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-10">
-
-        {/* 🔥 LEFT - IMAGE */}
-        <div>
+        {/* LEFT SIDE - IMAGES */}
+        <div className="flex flex-col gap-4">
           <div className="overflow-hidden rounded-2xl border bg-gray-50">
             <img
-              src={image}
+              src={selectedImage || FALLBACK_IMAGE}
               alt={product.name}
-              className="w-full h-[420px] md:h-[520px] object-cover hover:scale-105 transition duration-500"
+              className="w-full h-[420px] md:h-[520px] object-cover transition duration-500"
             />
+          </div>
+
+          <div className="grid grid-cols-3 gap-3">
+            {productImages.slice(1, 4).map((img, index) => (
+              <button
+                key={index}
+                type="button"
+                onClick={() => setSelectedImage(img)}
+                className={`rounded-xl overflow-hidden border-2 transition ${
+                  selectedImage === img
+                    ? "border-pink-600"
+                    : "border-transparent"
+                }`}
+              >
+                <img
+                  src={img}
+                  alt={`${product.name} ${index + 2}`}
+                  className="w-full h-28 object-cover"
+                />
+              </button>
+            ))}
+
+            {productImages.length < 4 &&
+              Array.from({ length: 4 - productImages.length }).map((_, i) => (
+                <div
+                  key={`empty-${i}`}
+                  className="h-28 rounded-xl border border-dashed border-gray-200 bg-gray-50"
+                />
+              ))}
           </div>
         </div>
 
-        {/* 🔥 RIGHT - DETAILS */}
+        {/* RIGHT SIDE - DETAILS */}
         <div className="flex flex-col gap-4">
-
-          {/* CATEGORY */}
           {product.category?.name && (
             <p className="text-xs uppercase tracking-wide text-pink-600 font-medium">
               {product.category.name}
             </p>
           )}
 
-          {/* TITLE */}
           <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
             {product.name}
           </h1>
 
-          {/* FABRIC */}
           {product.fabric && (
-            <p className="text-sm text-gray-500">
-              Fabric: {product.fabric}
-            </p>
+            <p className="text-sm text-gray-500">Fabric: {product.fabric}</p>
           )}
 
-          {/* PRICE */}
           <div className="flex items-center gap-3 flex-wrap mt-2">
             <span className="text-3xl font-bold text-pink-600">
               ₹{product.price}
@@ -141,19 +167,16 @@ const ProductDetails = () => {
             )}
           </div>
 
-          {/* SAVINGS */}
           {savings > 0 && (
             <p className="text-green-600 text-sm font-medium">
               🎉 You save ₹{savings}
             </p>
           )}
 
-          {/* DESCRIPTION */}
           <p className="text-gray-600 leading-relaxed mt-2">
             {product.description || "No description available"}
           </p>
 
-          {/* SIZE */}
           <div className="mt-4">
             <p className="font-medium mb-2">Select Size</p>
             <div className="flex gap-2 flex-wrap">
@@ -173,7 +196,6 @@ const ProductDetails = () => {
             </div>
           </div>
 
-          {/* QUANTITY */}
           <div className="mt-3">
             <p className="font-medium mb-2">Quantity</p>
             <div className="flex items-center gap-3">
@@ -195,7 +217,6 @@ const ProductDetails = () => {
             </div>
           </div>
 
-          {/* BUTTONS */}
           <div className="flex flex-col gap-3 mt-5">
             <button
               onClick={handleAddToCart}
@@ -213,7 +234,6 @@ const ProductDetails = () => {
             </button>
           </div>
 
-          {/* TRUST BADGES */}
           <div className="text-sm text-gray-500 mt-4 space-y-1">
             <p>✔ 100% Original Product</p>
             <p>✔ Easy Returns & Exchange</p>
@@ -222,12 +242,11 @@ const ProductDetails = () => {
         </div>
       </div>
 
-      {/* 🔥 RELATED PRODUCTS */}
       <div className="max-w-7xl mx-auto mt-16">
         <RelatedProducts
-  category={product.category?._id || product.category} // ✅ SAFE
-  currentId={product._id}
-/>
+          category={product.category?._id || product.category}
+          currentId={product._id}
+        />
       </div>
     </div>
   );
