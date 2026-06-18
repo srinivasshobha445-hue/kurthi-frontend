@@ -12,7 +12,6 @@ const Register = () => {
     password: "",
   });
 
-  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -35,7 +34,8 @@ const Register = () => {
       return false;
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex =
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailRegex.test(email.trim())) {
       toast.error("Please enter a valid email");
@@ -66,20 +66,21 @@ const Register = () => {
 
       const res = await API.post("/auth/register", payload);
 
-      toast.success(res.data?.message || "OTP sent successfully");
+      toast.success(
+        res.data?.message || "OTP sent successfully"
+      );
 
-      setFormData({
-        name: "",
-        email: "",
-        password: "",
+      navigate("/verify-otp", {
+        state: {
+          email: payload.email,
+        },
       });
-
-      navigate("/", { replace: true });
     } catch (error) {
       console.error(error);
 
       toast.error(
-        error.response?.data?.message || "Registration failed"
+        error.response?.data?.message ||
+          "Registration failed"
       );
     } finally {
       setLoading(false);
@@ -97,7 +98,10 @@ const Register = () => {
           Join Desire7 Clothing
         </p>
 
-        <form onSubmit={handleRegister} className="space-y-4">
+        <form
+          onSubmit={handleRegister}
+          className="space-y-4"
+        >
           <div>
             <label className="text-sm font-medium text-gray-700">
               Full Name
@@ -135,25 +139,15 @@ const Register = () => {
               Password
             </label>
 
-            <div className="relative mt-1">
-              <input
-                type={showPassword ? "text" : "password"}
-                name="password"
-                autoComplete="new-password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="Minimum 6 characters"
-                className="w-full border rounded-lg px-4 py-3 pr-20 focus:outline-none focus:ring-2 focus:ring-pink-500"
-              />
-
-              <button
-                type="button"
-                onClick={() => setShowPassword((prev) => !prev)}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-sm font-medium text-pink-600 px-2 py-1"
-              >
-                {showPassword ? "Hide" : "Show"}
-              </button>
-            </div>
+            <input
+              type="password"
+              name="password"
+              autoComplete="new-password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Minimum 6 characters"
+              className="w-full border rounded-lg px-4 py-3 mt-1 focus:outline-none focus:ring-2 focus:ring-pink-500"
+            />
 
             <p className="text-xs text-gray-400 mt-1">
               Password must contain at least 6 characters.
@@ -169,13 +163,18 @@ const Register = () => {
                 : "bg-pink-600 hover:bg-pink-700"
             }`}
           >
-            {loading ? "Creating Account..." : "Register"}
+            {loading
+              ? "Creating Account..."
+              : "Register"}
           </button>
         </form>
 
         <p className="text-center text-sm text-gray-500 mt-6">
           Already have an account?{" "}
-          <Link to="/login" className="text-pink-600 font-medium">
+          <Link
+            to="/login"
+            className="text-pink-600 font-medium"
+          >
             Login
           </Link>
         </p>
