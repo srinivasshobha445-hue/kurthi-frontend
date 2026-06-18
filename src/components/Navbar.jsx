@@ -209,7 +209,7 @@ const Navbar = () => {
                 />
                 {profileOpen && (
                   <div className="absolute right-0 mt-3 w-44 bg-white shadow-lg rounded-xl p-3 text-sm flex flex-col gap-2">
-                    <Link to="/orders">📦 My Orders</Link>
+                    <Link to="/orders">My Orders</Link>
                     <button onClick={handleLogout} className="text-left">
                       🚪 Logout
                     </button>
