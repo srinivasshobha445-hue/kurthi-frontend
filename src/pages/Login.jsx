@@ -1,4 +1,3 @@
-// Login.jsx
 import { useContext, useState } from "react";
 import API from "../api/axios";
 import { toast } from "react-toastify";
@@ -9,6 +8,7 @@ const Login = () => {
   const { login } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -64,14 +64,24 @@ const Login = () => {
           value={email}
         />
 
-        <input
-          type="password"
-          autoComplete="current-password"
-          placeholder="Password"
-          className="border p-3 rounded-lg w-full mb-4 focus:outline-none focus:ring-2 focus:ring-pink-400"
-          onChange={(e) => setPassword(e.target.value)}
-          value={password}
-        />
+        <div className="relative mb-4">
+          <input
+            type={showPassword ? "text" : "password"}
+            autoComplete="current-password"
+            placeholder="Password"
+            className="border p-3 rounded-lg w-full pr-20 focus:outline-none focus:ring-2 focus:ring-pink-400"
+            onChange={(e) => setPassword(e.target.value)}
+            value={password}
+          />
+
+          <button
+            type="button"
+            onClick={() => setShowPassword((prev) => !prev)}
+            className="absolute right-2 top-1/2 -translate-y-1/2 text-sm font-medium text-pink-600 px-2 py-1"
+          >
+            {showPassword ? "Hide" : "Show"}
+          </button>
+        </div>
 
         <button
           type="submit"
