@@ -1,178 +1,176 @@
-import { useState } from "react";
-import { toast } from "react-toastify";
-import API from "../api/axios"; // ✅ your axios instance
+import {
+  FaPhoneAlt,
+  FaEnvelope,
+  FaWhatsapp,
+  FaClock,
+  FaMapMarkerAlt,
+} from "react-icons/fa";
 
 const Contact = () => {
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    message: "",
-  });
-
-  const [loading, setLoading] = useState(false);
-
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  // ✅ VALIDATION
-  const validate = () => {
-    if (!form.name.trim()) return "Name is required";
-    if (!form.email.includes("@")) return "Valid email required";
-    if (form.message.length < 10)
-      return "Message must be at least 10 characters";
-    return null;
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const error = validate();
-    if (error) {
-      toast.error(error);
-      return;
-    }
-
-    try {
-      setLoading(true);
-
-      // 🔥 BACKEND API CALL (you can create this later)
-      await API.post("/contact", form);
-
-      toast.success("Message sent successfully ✅");
-
-      setForm({
-        name: "",
-        email: "",
-        message: "",
-      });
-    } catch (err) {
-      console.error(err);
-      toast.error("Something went wrong. Try again!");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
-    <div className="bg-[#fffaf7] min-h-screen text-gray-800">
+    <div className="bg-gradient-to-b from-white via-pink-50 to-white min-h-screen">
+      {/* HERO */}
+      <div className="text-center py-16 px-4">
+        <span className="bg-pink-100 text-pink-600 px-4 py-1 rounded-full text-sm font-semibold">
+          Contact Desire7
+        </span>
 
-      {/* HEADER */}
-      <div className="text-center py-12 px-4">
-        <h1 className="text-3xl md:text-4xl font-bold text-pink-700">
-          Contact Us
+        <h1 className="text-4xl md:text-5xl font-bold mt-5 text-gray-800">
+          We're Here To Help
         </h1>
-        <p className="text-gray-600 mt-3 max-w-xl mx-auto">
-          We'd love to hear from you. Reach out for queries, support, or feedback.
+
+        <p className="text-gray-500 mt-4 max-w-2xl mx-auto">
+          Visit our stores, call us directly, or connect with us on WhatsApp
+          for product enquiries, orders, and support.
         </p>
       </div>
 
-      {/* MAIN GRID */}
-      <div className="max-w-7xl mx-auto px-4 md:px-10 pb-16 grid md:grid-cols-2 gap-10">
+      {/* CONTACT CARDS */}
+      <div className="max-w-6xl mx-auto px-4 md:px-8 pb-16">
+        <div className="grid md:grid-cols-3 gap-6">
 
-        {/* LEFT - INFO */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm space-y-6">
-
-          <h2 className="text-xl font-semibold text-pink-700">
-            Store Information
-          </h2>
-
-          <div>
-            <p className="font-medium">📍 Address</p>
-            <p className="text-gray-600 text-sm mt-1 leading-relaxed">
-              GMR Towers, Hongasandra <br />
-              Begur Main Road, Bangalore
-            </p>
-          </div>
-
-          <div>
-            <p className="font-medium">📞 Phone</p>
-            <p className="text-gray-600 text-sm mt-1">
-              +91 98765 43210
-            </p>
-          </div>
-
-          <div>
-            <p className="font-medium">📧 Email</p>
-            <p className="text-gray-600 text-sm mt-1">
-              support@kurthistore.com
-            </p>
-          </div>
-
-          <a
-            href="https://www.google.com/maps/search/?api=1&query=Bangalore"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block mt-4 px-5 py-2 bg-pink-600 text-white rounded-full hover:bg-pink-700 transition"
-          >
-            View on Map
-          </a>
-        </div>
-
-        {/* RIGHT - FORM */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm">
-
-          <h2 className="text-xl font-semibold text-pink-700 mb-6">
-            Send a Message
-          </h2>
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-
-            <div>
-              <label className="text-sm text-gray-600">Full Name</label>
-              <input
-                type="text"
-                name="name"
-                value={form.name}
-                onChange={handleChange}
-                className="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500"
-                placeholder="Enter your name"
-              />
+          {/* PHONE */}
+          <div className="bg-white rounded-3xl p-8 shadow-lg border border-gray-100 text-center hover:-translate-y-2 transition-all">
+            <div className="w-16 h-16 mx-auto rounded-full bg-pink-100 flex items-center justify-center">
+              <FaPhoneAlt className="text-pink-600 text-2xl" />
             </div>
 
-            <div>
-              <label className="text-sm text-gray-600">Email</label>
-              <input
-                type="email"
-                name="email"
-                value={form.email}
-                onChange={handleChange}
-                className="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500"
-                placeholder="Enter your email"
-              />
-            </div>
+            <h3 className="text-xl font-bold mt-5">
+              Call Us
+            </h3>
 
-            <div>
-              <label className="text-sm text-gray-600">Message</label>
-              <textarea
-                name="message"
-                rows="5"
-                value={form.message}
-                onChange={handleChange}
-                className="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500"
-                placeholder="Write your message..."
-              />
-            </div>
+            <p className="text-gray-500 mt-2">
+              Speak directly with our team
+            </p>
 
-            {/* 🔥 BUTTON */}
-            <button
-              type="submit"
-              disabled={loading}
-              className={`w-full py-3 rounded-xl text-white transition ${
-                loading
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-gradient-to-r from-pink-600 to-rose-500 hover:opacity-90"
-              }`}
+            <a
+              href="tel:9620802026"
+              className="inline-block mt-5 text-pink-600 font-semibold"
             >
-              {loading ? "Sending..." : "Send Message"}
-            </button>
+              +91 9620802026
+            </a>
+          </div>
 
-          </form>
+          {/* EMAIL */}
+          <div className="bg-white rounded-3xl p-8 shadow-lg border border-gray-100 text-center hover:-translate-y-2 transition-all">
+            <div className="w-16 h-16 mx-auto rounded-full bg-pink-100 flex items-center justify-center">
+              <FaEnvelope className="text-pink-600 text-2xl" />
+            </div>
+
+            <h3 className="text-xl font-bold mt-5">
+              Email Us
+            </h3>
+
+            <p className="text-gray-500 mt-2">
+              Send us your enquiries
+            </p>
+
+            <a
+              href="mailto:desire7clothing@gmail.com"
+              className="inline-block mt-5 text-pink-600 font-semibold break-all"
+            >
+              desire7clothing@gmail.com
+            </a>
+          </div>
+
+          {/* HOURS */}
+          <div className="bg-white rounded-3xl p-8 shadow-lg border border-gray-100 text-center hover:-translate-y-2 transition-all">
+            <div className="w-16 h-16 mx-auto rounded-full bg-pink-100 flex items-center justify-center">
+              <FaClock className="text-pink-600 text-2xl" />
+            </div>
+
+            <h3 className="text-xl font-bold mt-5">
+              Store Hours
+            </h3>
+
+            <p className="text-gray-500 mt-2">
+              Open every day
+            </p>
+
+            <p className="mt-5 text-pink-600 font-semibold">
+              10:00 AM - 9:00 PM
+            </p>
+          </div>
         </div>
-      </div>
 
-      <div className="text-center pb-10 text-sm text-gray-500">
-        We typically respond within 24 hours.
+        {/* MAIN CONTACT SECTION */}
+        <div className="mt-12 bg-white rounded-3xl shadow-lg border border-gray-100 p-8 md:p-12">
+
+          <div className="flex items-center gap-3 mb-6">
+            <FaMapMarkerAlt className="text-pink-600 text-xl" />
+            <h2 className="text-2xl font-bold text-gray-800">
+              Visit Our Stores
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+
+            <div className="bg-pink-50 rounded-2xl p-5">
+              <h3 className="font-bold text-lg text-gray-800">
+                Desire7
+              </h3>
+
+              <p className="text-gray-600 text-sm mt-2">
+                Garebhavipalya 81/1-1, 14th Main, Begur Rd,
+                near Holy Family Church, Adarsha Layout,
+                Hongasandra, Bengaluru, Karnataka 560114
+              </p>
+            </div>
+
+            <div className="bg-pink-50 rounded-2xl p-5">
+              <h3 className="font-bold text-lg text-gray-800">
+                Desire7
+              </h3>
+
+              <p className="text-gray-600 text-sm mt-2">
+                Indian Oil Petroleum, 883 Perody Chamber,
+                New, Vijaya Bank Layout,
+                Bengaluru, Karnataka 560076
+              </p>
+            </div>
+
+            <div className="bg-pink-50 rounded-2xl p-5">
+              <h3 className="font-bold text-lg text-gray-800">
+                New Look
+              </h3>
+
+              <p className="text-gray-600 text-sm mt-2">
+                JC Nagar Main Rd, 2nd Phase,
+                Royal Meridian Layout,
+                Devarachikkana Halli,
+                Bengaluru, Karnataka 560114
+              </p>
+            </div>
+
+          </div>
+
+          {/* ACTION BUTTONS */}
+          <div className="flex flex-wrap justify-center gap-4 mt-10">
+
+            <a
+              href="tel:9620802026"
+              className="bg-pink-600 text-white px-8 py-3 rounded-full hover:bg-pink-700 transition"
+            >
+              Call Now
+            </a>
+
+            <a
+              href="https://wa.me/919620802026"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-green-600 text-white px-8 py-3 rounded-full hover:bg-green-700 transition flex items-center gap-2"
+            >
+              <FaWhatsapp />
+              WhatsApp
+            </a>
+
+          </div>
+        </div>
+
+        {/* FOOTER */}
+        <div className="text-center mt-10 text-gray-500 text-sm">
+          Thank you for choosing Desire7 & New Look ❤️
+        </div>
       </div>
     </div>
   );
