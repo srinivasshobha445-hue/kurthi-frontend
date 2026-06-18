@@ -12,8 +12,14 @@ const ProductCard = memo(({ product }) => {
   const [imgError, setImgError] = useState(false);
 
   const image = useMemo(() => {
-    return imgError || !product?.image ? FALLBACK_IMAGE : product.image;
-  }, [imgError, product?.image]);
+  const firstImage =
+    product?.images?.[0] ||
+    product?.image;
+
+  return imgError || !firstImage
+    ? FALLBACK_IMAGE
+    : firstImage;
+}, [imgError, product]);
 
   const discount = useMemo(() => {
     if (!product) return 0;
