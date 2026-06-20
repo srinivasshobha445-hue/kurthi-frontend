@@ -47,7 +47,7 @@ const Contact = () => {
               href="tel:9620802026"
               className="inline-block mt-5 text-pink-600 font-semibold"
             >
-              +91 9620802026
+              +91 9148497789
             </a>
           </div>
 
