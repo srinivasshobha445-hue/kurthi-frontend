@@ -217,17 +217,7 @@ const Checkout = () => {
   </div>
 </div>
 
-<button
-  onClick={handleOrder}
-  disabled={placingOrder}
-  className={`w-full mt-6 text-white py-3 rounded-xl transition ${
-    placingOrder
-      ? "bg-gray-400 cursor-not-allowed"
-      : "bg-green-600 hover:bg-green-700"
-  }`}
->
-  {placingOrder ? "Placing Order..." : "Place Order"}
-</button>
+
         </div>
       </div>
     </div>
