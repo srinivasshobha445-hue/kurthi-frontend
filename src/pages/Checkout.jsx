@@ -200,6 +200,34 @@ const Checkout = () => {
           >
             {placingOrder ? "Placing Order..." : "Place Order"}
           </button>
+          {/* Cash on Delivery Notice */}
+<div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-xl">
+  <div className="flex items-start gap-3">
+    <span className="text-xl">💵</span>
+    <div>
+      <h3 className="font-semibold text-gray-800">
+        Cash on Delivery Available
+      </h3>
+      <p className="text-sm text-gray-600 mt-1">
+        We currently offer Cash on Delivery (COD) only. Please keep the exact
+        payment amount ready at the time of delivery. Our delivery partner will
+        collect the payment when your order is delivered.
+      </p>
+    </div>
+  </div>
+</div>
+
+<button
+  onClick={handleOrder}
+  disabled={placingOrder}
+  className={`w-full mt-6 text-white py-3 rounded-xl transition ${
+    placingOrder
+      ? "bg-gray-400 cursor-not-allowed"
+      : "bg-green-600 hover:bg-green-700"
+  }`}
+>
+  {placingOrder ? "Placing Order..." : "Place Order"}
+</button>
         </div>
       </div>
     </div>
