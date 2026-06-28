@@ -6,8 +6,7 @@ import { CartContext } from "../context/CartContext";
 import { toast } from "react-toastify";
 import RelatedProducts from "../components/RelatedProducts";
 
-const FALLBACK_IMAGE =
-  "https://via.placeholder.com/800x1000?text=No+Image";
+const FALLBACK_IMAGE = "https://via.placeholder.com/800x1000?text=No+Image";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -16,10 +15,16 @@ const ProductDetails = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [qty, setQty] = useState(1);
-  const [size, setSize] = useState("M");
+  const [size, setSize] = useState("");
   const [selectedImage, setSelectedImage] = useState("");
 
   const { addToCart } = useContext(CartContext);
+
+  useEffect(() => {
+  if (product?.sizes?.length > 0) {
+    setSize(product.sizes[0]);
+  }
+}, [product]);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -38,6 +43,7 @@ const ProductDetails = () => {
     fetchProduct();
   }, [id]);
 
+
   const productImages = useMemo(() => {
     if (!product) return [];
     const imgs = Array.isArray(product.images) ? product.images : [];
@@ -54,17 +60,13 @@ const ProductDetails = () => {
 
   if (loading) {
     return (
-      <div className="text-center py-20 text-gray-500">
-        Loading product...
-      </div>
+      <div className="text-center py-20 text-gray-500">Loading product...</div>
     );
   }
 
   if (!product) {
     return (
-      <div className="text-center py-20 text-red-500">
-        Product not found
-      </div>
+      <div className="text-center py-20 text-red-500">Product not found</div>
     );
   }
 
@@ -72,10 +74,10 @@ const ProductDetails = () => {
     product.discount > 0
       ? product.discount
       : product.oldPrice && product.price
-      ? Math.round(
-          ((product.oldPrice - product.price) / product.oldPrice) * 100
-        )
-      : 0;
+        ? Math.round(
+            ((product.oldPrice - product.price) / product.oldPrice) * 100,
+          )
+        : 0;
 
   const savings =
     product.oldPrice && product.price ? product.oldPrice - product.price : 0;
@@ -177,24 +179,37 @@ const ProductDetails = () => {
             {product.description || "No description available"}
           </p>
 
-          <div className="mt-4">
-            <p className="font-medium mb-2">Select Size</p>
-            <div className="flex gap-2 flex-wrap">
-              {["S", "M", "L", "XL"].map((s) => (
-                <button
-                  key={s}
-                  onClick={() => setSize(s)}
-                  className={`px-4 py-2 border rounded-full text-sm transition ${
-                    size === s
-                      ? "bg-pink-600 text-white border-pink-600"
-                      : "hover:bg-gray-100"
-                  }`}
-                >
-                  {s}
-                </button>
-              ))}
+          {/* SIZE */}
+          {product.sizes && product.sizes.length > 0 && (
+            <div className="mt-5">
+              <div className="flex items-center justify-between mb-3">
+                <p className="font-semibold text-gray-800">Select Size</p>
+
+                {size && (
+                  <span className="text-sm text-gray-500">
+                    Selected: <span className="font-semibold">{size}</span>
+                  </span>
+                )}
+              </div>
+
+              <div className="flex flex-wrap gap-3">
+                {product.sizes.map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => setSize(s)}
+                    className={`min-w-[55px] h-12 rounded-lg border text-sm font-semibold transition-all duration-200 ${
+                      size === s
+                        ? "bg-black text-white border-black shadow"
+                        : "bg-white text-gray-800 border-gray-300 hover:border-black hover:shadow"
+                    }`}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           <div className="mt-3">
             <p className="font-medium mb-2">Quantity</p>
