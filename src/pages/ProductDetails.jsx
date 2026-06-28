@@ -21,10 +21,10 @@ const ProductDetails = () => {
   const { addToCart } = useContext(CartContext);
 
   useEffect(() => {
-  if (product?.sizes?.length > 0) {
-    setSize(product.sizes[0]);
-  }
-}, [product]);
+    if (product?.sizes?.length > 0) {
+      setSize(product.sizes[0]);
+    }
+  }, [product]);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -42,7 +42,6 @@ const ProductDetails = () => {
 
     fetchProduct();
   }, [id]);
-
 
   const productImages = useMemo(() => {
     if (!product) return [];
@@ -105,22 +104,22 @@ const ProductDetails = () => {
             />
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
-            {productImages.slice(1, 4).map((img, index) => (
+          <div className="grid grid-cols-4 gap-3">
+            {productImages.map((img, index) => (
               <button
                 key={index}
                 type="button"
                 onClick={() => setSelectedImage(img)}
-                className={`rounded-xl overflow-hidden border-2 transition ${
+                className={`rounded-xl overflow-hidden border-2 transition-all duration-200 ${
                   selectedImage === img
                     ? "border-pink-600"
-                    : "border-transparent"
+                    : "border-gray-200 hover:border-pink-400"
                 }`}
               >
                 <img
                   src={img}
-                  alt={`${product.name} ${index + 2}`}
-                  className="w-full h-28 object-cover"
+                  alt={`${product.name} ${index + 1}`}
+                  className="w-full h-24 object-cover"
                 />
               </button>
             ))}
@@ -129,7 +128,7 @@ const ProductDetails = () => {
               Array.from({ length: 4 - productImages.length }).map((_, i) => (
                 <div
                   key={`empty-${i}`}
-                  className="h-28 rounded-xl border border-dashed border-gray-200 bg-gray-50"
+                  className="h-24 rounded-xl border border-dashed border-gray-200 bg-gray-50"
                 />
               ))}
           </div>
