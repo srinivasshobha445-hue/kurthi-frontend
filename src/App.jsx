@@ -3,7 +3,7 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ProtectedRoute from "./components/ProtectedRoute";
-
+import ScrollToTop from "./components/ScrollToTop";
 import Home from "./pages/Home";
 import Collection from "./pages/Collection";
 import Product from "./pages/Product";
@@ -26,6 +26,8 @@ const App = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+
+        <ScrollToTop />
       {!hideLayout && <Navbar />}
 
       <main className="flex-grow">
