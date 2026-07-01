@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/feed.xml",
+      "destination": "https://api.desire7clothing.com/feed.xml"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
