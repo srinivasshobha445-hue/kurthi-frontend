@@ -1,4 +1,3 @@
-
 import { Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -17,6 +16,7 @@ import CollectionPage from "./pages/CollectionPage";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import VerifyOtp from "./pages/VerifyOtp";
+import ReturnPolicy from "./pages/ReturnPolicy";
 
 const App = () => {
   const location = useLocation();
@@ -26,8 +26,7 @@ const App = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-
-        <ScrollToTop />
+      <ScrollToTop />
       {!hideLayout && <Navbar />}
 
       <main className="flex-grow">
@@ -44,6 +43,7 @@ const App = () => {
           <Route path="/collections/:categoryId" element={<CollectionPage />} />
           <Route path="/product" element={<Product />} />
           <Route path="/verify-otp" element={<VerifyOtp />} />
+          <Route path="/return-policy" element={<ReturnPolicy />} />
 
           <Route
             path="/orders"
@@ -62,4 +62,3 @@ const App = () => {
 };
 
 export default App;
-
