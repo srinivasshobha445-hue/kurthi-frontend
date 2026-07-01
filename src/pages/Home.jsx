@@ -4,6 +4,7 @@ import Categories from "../components/Categories";
 import Hero2 from "../components/Hero2";
 import Features from "../components/Features";
 import LocationSection from "../components/LocationSection";
+import GoogleAd from "../components/GoogleAd";
 
 const Home = () => {
   return (
@@ -13,6 +14,7 @@ const Home = () => {
        <TrendingProducts />
        <Hero2 />
        <Features />
+       <GoogleAd />
         <LocationSection />
     </div>
   );
