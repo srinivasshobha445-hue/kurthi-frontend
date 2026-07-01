@@ -28,6 +28,8 @@ const Footer = () => {
             <Link to="/collection">Collection</Link>
             <Link to="/about">About</Link>
             <Link to="/contact">Contact</Link>
+            <Link to="/return-policy">Return Policy</Link>
+            <Link to="/terms">Terms & Conditions</Link>
           </div>
         </div>
 
@@ -39,7 +41,6 @@ const Footer = () => {
             <Link to="/collection">Party Wear</Link>
             <Link to="/collection">Casual Wear</Link>
             <Link to="/collection">Festive Collection</Link>
-            <Link to="/return-policy">Return Policy</Link>
           </div>
         </div>
 

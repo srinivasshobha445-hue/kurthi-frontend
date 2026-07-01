@@ -17,6 +17,7 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import VerifyOtp from "./pages/VerifyOtp";
 import ReturnPolicy from "./pages/ReturnPolicy";
+import TermsConditions from "./pages/TermsConditions";
 
 const App = () => {
   const location = useLocation();
@@ -53,6 +54,7 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+          <Route path="/terms" element={<TermsConditions />} />
         </Routes>
       </main>
 
